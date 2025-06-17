@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 這就是您要加上的 Favicon -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/5qr0W3z.png">
+    <title>Cream 的健康互動報告 測試版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #fdf8f8; /* A very light, warm pinkish-white background */
+            margin: 0;
+            padding: 0;
+        }
+        .banner-container {
+            background-color: #e0b8be; /* Main theme color as requested */
+            padding: 20px 0;
+            text-align: center;
+            border: none !important;
+            outline: none !important;
+        }
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            max-height: 250px; 
+            border: none !important;
+            outline: none !important;
+        }
+        .page-section-title {
+            @apply text-2xl md:text-3xl font-bold text-gray-800 mb-6 pt-8 border-t border-gray-200 mt-10;
+        }
+        .page-section-title:first-of-type {
+            @apply border-t-0 pt-0 mt-0;
+        }
+        .card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07); 
+            transition: all 0.3s ease; 
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        table {
+            min-width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            border-radius: 0.5rem;
+            overflow: hidden; 
+            margin-top: 1.5rem;
+        }
+        thead {
+            background-color: #f8e5e7; /* Lighter version of the theme color */
+        }
+        th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            color: #8c5d6b; /* Deep mauve for header text */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fdfcfc;
+        }
+        td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: #2d3748; 
+            white-space: normal;
+            vertical-align: top;
+        }
+        .organ-btn { 
+            transition: all 0.2s ease-in-out; 
+            background-color: #fdf2f2; /* Very light pink */
+            border: 1px solid #f8e5e7;
+            color: #92404b; /* Soft reddish-brown */
+            @apply px-5 py-3 font-semibold rounded-full flex items-center justify-center space-x-2;
+        }
+        .organ-btn .icon {
+            @apply text-xl; 
+        }
+        .organ-btn:hover { 
+            transform: scale(1.05); 
+            background-color: #fbe7e7;
+            border-color: #e0b8be;
+        }
+        .organ-btn.selected {
+            transform: scale(1.05); 
+            background-color: #e0b8be; /* Main theme color */
+            color: #374151; /* Dark gray for contrast */
+            font-weight: bold;
+            border-color: #c9a0a6; /* Slightly darker border for selected */
+        }
+        #organ-details-container {
+            @apply card p-6 md:p-8 min-h-[300px] mt-6;
+        }
+        /* Custom link color */
+        .custom-link {
+            color: #a35d6a; /* Dark, muted rose */
+            text-decoration: none;
+        }
+        .custom-link:hover {
+            text-decoration: underline;
+        }
+        /* --- NEW: CSS for Audio Speed Buttons --- */
+        .audio-speed-btn {
+            background-color: #fdf2f2;
+            color: #92404b;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid #fbe7e7;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .audio-speed-btn:hover {
+            background-color: #fbe7e7;
+            transform: scale(1.05);
+        }
+        .audio-speed-btn.active {
+            background-color: #e0b8be;
+            color: white;
+            font-weight: bold;
+            border-color: #e0b8be;
+        }
+        .header-title {
+            color: #c48a94;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Banner (Updated as requested) -->
+    <div class="banner-container">
+        <img src="https://i.imgur.com/HjqqrMC.png" alt="QQ 可愛 Banner" class="banner-image">
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl main-content-area">
+
+        <header class="text-center my-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Cream 的電腦斷層(CT)互動報告 測試版</h1>
+            <p class="text-gray-600 mt-2">報告日期: 2025/06/15</p>
+            <p class="text-gray-600 mt-2">此份AI整理報告僅供參考，所有醫療決策請務必以獸醫師的<a href="http://reports.alex-ray.com/7qzth6" target="_blank" class="font-semibold custom-link">原始報告</a>及醫囑為準。</p>
+        </header>
+
+        <main>
+            <!-- Dashboard Section -->
+            <section id="dashboard-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold mb-6">核心發現與健康警示</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Key alerts with updated border colors -->
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #c95d6a;">
+                        <div class="text-5xl mb-3">⚠️</div>
+                        <h3 class="text-xl font-bold mb-2">腹腔重點問題</h3>
+                        <p class="text-gray-600">在 <span class="font-semibold">肝膽系統</span> 發現肝內膽管、膽囊管與總膽管擴張，<span class="font-semibold">十二指腸大乳突</span> 增厚。此外 <span class="font-semibold">脾臟</span> 有多個斑塊狀顯影區域且腫大，需高度懷疑腫瘤。</p>
+                    </div>
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #e0b8be;">
+                        <div class="text-5xl mb-3">🩺</div>
+                        <h3 class="text-xl font-bold mb-2">多重系統發現</h3>
+                        <p class="text-gray-600">在 <span class="font-semibold">頭部</span> 發現雙側鼻腔有液體積聚和鼻甲骨溶解。 <span class="font-semibold">胸腔</span> 有肺部間質/肺泡相變化及支氣管擴張。同時有 <span class="font-semibold">脊椎</span> 與 <span class="font-semibold">關節</span> 的退行性病變。</p>
+                    </div>
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #f0d0d5;">
+                        <div class="text-5xl mb-3">✅</div>
+                        <h3 class="text-xl font-bold mb-2">未見明確轉移跡象</h3>
+                        <p class="text-gray-600">本次電腦斷層掃描在 <span class="font-semibold">肺部未發現明確的腫瘤轉移證據</span>，此為相對正面的消息，有助於後續治療評估。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Details Section -->
+            <section id="details-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold">系統詳情</h2>
+                <p class="text-center text-gray-600 mt-1 mb-8">點擊下方按鈕，探索各個系統的詳細發現、獸醫的分析與建議。</p>
+                <div class="flex flex-wrap justify-center gap-x-3 gap-y-4 mb-8" id="organ-buttons-container"> 
+                    <!-- Organ buttons will be injected here by JS -->
+                </div>
+                <div id="organ-details-container">
+                    <!-- Selected organ details will be shown here -->
+                </div>
+            </section>
+
+            <!-- Plan Section -->
+            <section id="plan-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold">行動計畫與追蹤建議</h2>
+                <p class="text-center text-gray-600 mt-1 mb-8">這裡是獸醫師根據影像發現建議的後續步驟，幫助您規劃未來的醫療照護。</p>
+                <div class="card p-6">
+                    <div class="overflow-x-auto">
+                        <table id="followUpTable">
+                            <thead>
+                                <tr>
+                                    <th style="color: #8c5d6b;">系統/部位</th>
+                                    <th>主要發現/問題</th>
+                                    <th>建議行動</th>
+                                    <th style="color: #8c5d6b;">優先級</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table rows will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- FIXED: Audio Player Section -->
+            <section id="audio-guide" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center mb-2 header-title">AI對話淺聊Cream電腦斷層報告</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">您可以聆聽AI形成的podcast對話討論，也可以使用下方的按鈕調整播放速度。</p>
+                <div class="w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="bg-white p-4 md:p-6 shadow-xl border-2 rounded-lg" style="border-color: #e0b8be;">
+                        <!-- Audio player with speed controls -->
+                        <audio id="interactiveGuideAudio" controls class="w-full mb-4">
+                            <!-- 
+                                重要：請將您的音訊檔命名為 "02488.wav"，
+                                並將它上傳到與這個 index.html 檔案相同的資料夾中。
+                            -->
+                            <source src="02488.wav" type="audio/mpeg">
+                            您的瀏覽器不支援 audio 標籤。
+                        </audio>
+                        <div class="controls flex justify-center gap-2 flex-wrap">
+                            <button data-speed="0.75" class="audio-speed-btn">0.75x</button>
+                            <button data-speed="1" class="audio-speed-btn active">正常</button>
+                            <button data-speed="1.25" class="audio-speed-btn">1.25x</button>
+                            <button data-speed="1.5" class="audio-speed-btn">1.5x</button>
+                            <button data-speed="2" class="audio-speed-btn">2x</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="text-center mt-12 py-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">本網頁由美國獸醫影像專科醫師 謝淯紘醫師使用AI程式為飼主劉佩昇與「Cream」專屬製作。</p>
+            <p class="text-sm text-gray-500">內容基於 <a href="https://www.alex-ray.com" target="_blank" class="font-semibold custom-link">愛力克獅獸醫影像學院</a> 提供的電腦斷層報告整理，僅供參考，所有醫療決策請務必與您的主治獸醫師討論。</p>
+        </footer>
+
+    </div>
+
+<script>
+// Data extracted and summarized from the provided PDF report for "Cream"
+const reportData = {
+    headNeck: {
+        title: "頭部與頸部 (鼻腔、竇、牙齒)",
+        icon: "👃", // Nose emoji
+        findings: [
+            "<b>雙側鼻腔及右額竇、左蝶竇有液體積聚:</b> 導致鼻甲骨輕度鈍化和溶解，右側較嚴重。",
+            "<b>多顆牙齒缺失。</b>",
+            "其餘唾液腺、下頜骨、鼻咽、鼓室、甲狀腺及淋巴結無明顯異常。"
+        ],
+        implications: "主要為慢性鼻炎的表現，例如淋巴漿細胞性鼻炎。無法排除同時有感染或異物，腫瘤機會較低。鼻頭潰瘍可能與鼻腔問題相關。",
+        recommendations: "若尚未進行，可考慮鼻腔鏡檢查及生檢採樣，以進一步評估病因。",
+        followUp: { action: "鼻腔鏡檢查與生檢", priority: "高" }
+    },
+    thorax: {
+        title: "胸腔 (肺、心臟)",
+        icon: "🫁", // Lungs emoji
+        findings: [
+            "<b>肺葉輕度間質至肺泡相變化:</b> 位於右前、右後、左後肺葉腹側及右後肺葉背側。",
+            "<b>支氣管相及支氣管擴張:</b> 所有肺葉支氣管壁輕度增厚，部分支氣管擴張。",
+            "<b>左心房主觀輕度擴大。</b>",
+            "<b>主動脈根部有曲線狀礦物質。</b>"
+        ],
+        implications: "肺部變化可能為支氣管/下呼吸道疾病伴隨支氣管擴張，需考慮過敏、刺激或感染。肺塌陷可能是麻醉或趴臥引起。左心房擴大需排除心肌病，但本次檢查無心衰竭跡象。",
+        recommendations: "如臨床需要，可考慮氣道採樣 (如支氣管肺泡灌洗)；心臟超音波可進一步評估心臟。肺部目前未見明確腫瘤轉移證據。",
+        followUp: { action: "監控呼吸狀況，必要時評估心臟", priority: "中" }
+    },
+    abdomen: {
+        title: "腹腔 (肝膽、脾臟、胰臟、腸道)",
+        icon: "🟠", // Orange circle for abdomen
+        findings: [
+            "<b>膽道系統顯著異常:</b> 膽囊缺失 (符合病史)。多條肝內膽管擴張 (3.4mm)，膽囊管與總膽管擴張 (最大5mm)。十二指腸大乳突增厚 (約7mmx3.4mm)。",
+            "<b>肝臟結節:</b> 左外側肝葉有2.2mm低衰減結節，可能是囊腫，腫瘤可能性較低。",
+            "<b>脾臟腫大:</b> 脾臟主觀腫大，有多個斑塊狀顯影區域 (厚度達1.5cm)。",
+            "<b>胰臟輕度增厚:</b> 胰臟左葉和體部主觀輕度增厚 (達1.1cm)。",
+            "胃、小腸、結腸、腎臟、腎上腺、膀胱及腹腔淋巴結在正常範圍內。"
+        ],
+        implications: "膽道擴張可能繼發於膽囊缺失的重塑、膽汁鬱滯，或因十二指腸大乳突增厚引起的肝外膽管阻塞。脾臟腫大需考慮鬱血、脾炎或腫瘤。胰臟增厚可能為增生或慢性胰臟炎。",
+        recommendations: "<b>最優先建議：</b>腹部超音波檢查 (高頻線性探頭，由獸醫影像專科醫師進行) 以進一步評估十二指腸大乳突及膽道系統，可能需要1-3個月後複查。肝臟結節可考慮細針穿刺。脾臟腫大需進一步鑑別診斷。",
+        followUp: { action: "腹部超音波與鑑別診斷", priority: "高" }
+    },
+    skeletal: {
+        title: "骨骼與關節",
+        icon: "🦴", // Bone emoji
+        findings: [
+            "<b>胸椎與腰椎脊椎退行性病變 (spondylosis deformans)。</b>",
+            "<b>雙側肩胛肱關節與髖股關節有輕微退行性變化。</b>"
+        ],
+        implications: "這些是常見的老年性退行性變化，可能導致關節疼痛或活動受限。",
+        recommendations: "監控病患的活動力與疼痛表現，必要時可與獸醫師討論止痛或關節保健方案。",
+        followUp: { action: "監控活動力與疼痛", priority: "低" }
+    }
+};
+
+const organDisplayOrder = ['abdomen', 'headNeck', 'thorax', 'skeletal']; // Adjust order as needed. Abdomen is highest priority.
+
+document.addEventListener('DOMContentLoaded', () => {
+    const organButtonsContainer = document.getElementById('organ-buttons-container');
+    const organDetailsContainer = document.getElementById('organ-details-container');
+    const followUpTableBody = document.querySelector('#followUpTable tbody');
+
+    function createOrganButtons() {
+        if (!organButtonsContainer) return;
+        organDisplayOrder.forEach(key => {
+            const data = reportData[key];
+            if (data && data.title) {
+                const button = document.createElement('button');
+                button.className = 'organ-btn';
+                button.dataset.organ = key;
+                button.innerHTML = `<span class="icon">${data.icon}</span><span>${data.title}</span>`;
+                button.addEventListener('click', () => {
+                    displaySelectedOrganDetail(key);
+                    document.querySelectorAll('.organ-btn').forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                });
+                organButtonsContainer.appendChild(button);
+            }
+        });
+    }
+
+    function displaySelectedOrganDetail(organKey) {
+        if (!organDetailsContainer) return;
+        const data = reportData[organKey];
+        if (!data) return;
+
+        let html = `<h3 class="text-2xl font-bold mb-6 flex items-center"><span class="text-3xl mr-3">${data.icon}</span>${data.title}</h3>`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">`;
+        html += `
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">影像發現</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">${data.findings.map(f => `<li>${f}</li>`).join('')}</ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">這代表什麼？</h4>
+                <p class="text-gray-700">${data.implications || '待補充相關分析。'}</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">獸醫建議</h4>
+                <p class="text-gray-700">${data.recommendations || '待補充相關建議。'}</p>
+            </div>
+        `;
+        html += `</div>`;
+        organDetailsContainer.innerHTML = html;
+    }
+
+    function getPriorityClass(priority) {
+        if (!priority) return 'text-gray-700';
+        const lowerPriority = priority.toLowerCase();
+        if (lowerPriority.includes("高")) {
+            return 'font-extrabold'; /* Style will be inline */
+        }
+        if (lowerPriority.includes("高")) {
+            return 'font-semibold'; /* Style will be inline */
+        }
+        return '';
+    }
+
+    function getPriorityColor(priority) {
+        if (!priority) return '#2d3748'; // default text color
+        const lowerPriority = priority.toLowerCase();
+        if (lowerPriority.includes("高")) {
+            return '#c95d6a'; // Strong rose
+        }
+        if (lowerPriority.includes("高")) {
+            return '#d98a96'; // Muted rose
+        }
+        return '#8c5d6b'; // Deep mauve for low
+    }
+
+
+    function populateFollowUpTable() {
+        if (!followUpTableBody) return;
+        let tableHtml = '';
+        organDisplayOrder.forEach(key => {
+            const item = reportData[key];
+            if (item && item.followUp) {
+                const organTitleClass = "font-bold text-gray-800";
+                const priorityClass = getPriorityClass(item.followUp.priority);
+                const priorityColor = getPriorityColor(item.followUp.priority);
+                
+                let shortFinding = item.findings[0].replace(/<[^>]*>/g, ""); // Remove HTML tags
+                shortFinding = shortFinding.split('。')[0]; // Take only the first sentence
+
+                tableHtml += `
+                    <tr>
+                        <td class="${organTitleClass}">${item.title}</td>
+                        <td>${shortFinding}</td>
+                        <td>${item.followUp.action}</td>
+                        <td class="${priorityClass}" style="color: ${priorityColor};">${item.followUp.priority}</td>
+                    </tr>
+                `;
+            }
+        });
+        followUpTableBody.innerHTML = tableHtml;
+    }
+    
+    // --- NEW: Audio Speed Control Logic ---
+    const audioPlayer = document.getElementById('interactiveGuideAudio');
+    if (audioPlayer) {
+        const speedButtonsContainer = audioPlayer.nextElementSibling;
+        speedButtonsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.audio-speed-btn');
+            if (button) {
+                const speed = parseFloat(button.dataset.speed);
+                audioPlayer.playbackRate = speed;
+
+                // Update active button state
+                speedButtonsContainer.querySelectorAll('.audio-speed-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                
+                // Play audio if it was paused
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                }
+            }
+        });
+    }
+
+
+    // Initial setup
+    createOrganButtons();
+    const firstButton = organButtonsContainer.querySelector('.organ-btn');
+    if (firstButton) {
+        firstButton.click();
+    }
+    populateFollowUpTable();
+});
+</script>
+
+</body>
+</html>
