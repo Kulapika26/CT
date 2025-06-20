@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/5qr0W3z.png">
+    <title>弟弟 的電腦斷層(CT)互動報告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #fdf8f8; /* A very light, warm pinkish-white background */
+            margin: 0;
+            padding: 0;
+        }
+        .banner-container {
+            background-color: #e0b8be; /* Main theme color as requested */
+            padding: 20px 0;
+            text-align: center;
+            border: none !important; /* 確保沒有邊框 */
+            outline: none !important; /* 確保沒有外框 */
+        }
+        .banner-image {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            max-height: 250px; 
+            border: none !important; /* 確保圖片沒有邊框 */
+            outline: none !important; /* 確保圖片沒有外框 */
+        }
+        .page-section-title {
+            @apply text-2xl md:text-3xl font-bold text-gray-800 mb-6 pt-8 border-t border-gray-200 mt-10;
+        }
+        .page-section-title:first-of-type {
+            @apply border-t-0 pt-0 mt-0;
+        }
+        .card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07); 
+            transition: all 0.3s ease; 
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        table {
+            min-width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            border-radius: 0.5rem;
+            overflow: hidden; 
+            margin-top: 1.5rem;
+        }
+        thead {
+            background-color: #f8e5e7; /* Lighter version of the theme color */
+        }
+        th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            color: #8c5d6b; /* Deep mauve for header text */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fdfcfc;
+        }
+        td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: #2d3748; 
+            white-space: normal;
+            vertical-align: top;
+        }
+        .organ-btn { 
+            transition: all 0.2s ease-in-out; 
+            background-color: #fdf2f2; /* Very light pink */
+            border: 1px solid #f8e5e7;
+            color: #92404b; /* Soft reddish-brown */
+            @apply px-5 py-3 font-semibold rounded-full flex items-center justify-center space-x-2;
+        }
+        .organ-btn .icon {
+            @apply text-xl; 
+        }
+        .organ-btn:hover { 
+            transform: scale(1.05); 
+            background-color: #fbe7e7;
+            border-color: #e0b8be;
+        }
+        .organ-btn.selected {
+            transform: scale(1.05); 
+            background-color: #e0b8be; /* Main theme color */
+            color: #374151; /* Dark gray for contrast */
+            font-weight: bold;
+            border-color: #c9a0a6; /* Slightly darker border for selected */
+        }
+        #organ-details-container {
+            @apply card p-6 md:p-8 min-h-[300px] mt-6;
+        }
+        /* Custom link color */
+        .custom-link {
+            color: #a35d6a; /* Dark, muted rose */
+            text-decoration: none;
+        }
+        .custom-link:hover {
+            text-decoration: underline;
+        }
+        /* --- NEW: CSS for Audio Speed Buttons --- */
+        .audio-speed-btn {
+            background-color: #fdf2f2;
+            color: #92404b;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid #fbe7e7;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .audio-speed-btn:hover {
+            background-color: #fbe7e7;
+            transform: scale(1.05);
+        }
+        .audio-speed-btn.active {
+            background-color: #e0b8be;
+            color: white;
+            font-weight: bold;
+            border-color: #e0b8be;
+        }
+        .header-title {
+            color: #c48a94;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="banner-container">
+        <img src="https://i.imgur.com/HjqqrMC.png" alt="QQ 可愛 Banner" class="banner-image">
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl main-content-area">
+
+        <header class="text-center my-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">弟弟 的電腦斷層(CT)互動報告</h1>
+            <p class="text-gray-600 mt-2">報告日期: 2025/06/18</p>
+            <p class="text-gray-600 mt-2">此份AI整理報告僅供參考，所有醫療決策請務必以獸醫師的<a href="https://www.canva.com/design/DAGq3Ailfsw/YZiSOYJJ9d7VwozWtX30hQ/edit?utm_content=DAGq3Ailfsw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" class="font-semibold custom-link">原始報告</a>及醫囑為準。</p>
+        </header>
+
+        <main>
+            <section id="dashboard-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold mb-6">核心發現與健康警示</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #c95d6a;">
+                        <div class="text-5xl mb-3">⚠️</div>
+                        <h3 class="text-xl font-bold mb-2">胸腔問題</h3>
+                        <p class="text-gray-600">雙側胸膜腔有<span class="font-semibold">少量液體</span>，胸膜<span class="font-semibold">彌漫性增厚並顯影</span>，伴隨<span class="font-semibold">多個顯影結節</span>。右側胸膜腔內有少量氣體。雙側胸骨、前縱膈、後縱膈淋巴結腫大。</p>
+                    </div>
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #e0b8be;">
+                        <div class="text-5xl mb-3">🩺</div>
+                        <h3 class="text-xl font-bold mb-2">腹腔發現</h3>
+                        <p class="text-gray-600">肝臟有<span class="font-semibold">界限不清的顯影結節</span>。膽囊壁<span class="font-semibold">增厚</span>，有低衰減邊緣。脾臟邊緣平滑，<span class="font-semibold">顯影均質</span>。胰臟左葉邊緣不規則，胰體部局部<span class="font-semibold">輕度增厚</span>。右結腸淋巴結<span class="font-semibold">腫大</span>。腹膜和後腹膜腔內有<span class="font-semibold">少量液體</span>。</p>
+                    </div>
+                    <div class="card p-6 flex flex-col items-center text-center" style="border-top: 4px solid #f0d0d5;">
+                        <div class="text-5xl mb-3">✅</div>
+                        <h3 class="text-xl font-bold mb-2">初步診斷與建議</h3>
+                        <p class="text-gray-600">胸腔問題考慮<span class="font-semibold">腫瘤</span>或<span class="font-semibold">肉芽腫</span>。腹腔肝臟結節考慮<span class="font-semibold">結節性增生</span>、<span class="font-semibold">肉芽腫</span>或<span class="font-semibold">腫瘤</span>。建議對結節進行<span class="font-semibold">細針穿刺採樣</span>以進一步評估疾病。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="details-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold">系統詳情</h2>
+                <p class="text-center text-gray-600 mt-1 mb-8">點擊下方按鈕，探索各個系統的詳細發現、獸醫的分析與建議。</p>
+                <div class="flex flex-wrap justify-center gap-x-3 gap-y-4 mb-8" id="organ-buttons-container"> 
+                    </div>
+                <div id="organ-details-container">
+                    </div>
+            </section>
+
+            <section id="key-images-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold">關鍵影像</h2>
+                <p class="text-center text-gray-600 mt-1 mb-8">以下是報告中提及的關鍵影像，幫助您視覺化理解報告內容。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-4">
+                        <div class="h-80 overflow-hidden rounded-lg mb-4">
+                            <img src="1.png" alt="Image 1" class="w-full h-full object-cover object-center">
+                        </div>
+                        <h3 class="font-bold text-lg mb-2" style="color:#a35d6a;">圖1: 雙側胸膜腔積液</h3>
+                        <p class="text-gray-700">造影後第三次掃描的橫切面影像。雙側胸膜腔有少量不顯影的液體，導致肺葉從胸腔壁退縮。</p>
+                    </div>
+                    <div class="card p-4">
+                        <div class="h-80 overflow-hidden rounded-lg mb-4">
+                            <img src="2.png" alt="Image 2" class="w-full h-full object-cover object-center">
+                        </div>
+                        <h3 class="font-bold text-lg mb-2" style="color:#a35d6a;">圖2: 胸膜增厚</h3>
+                        <p class="text-gray-700">造影後第三次掃描的橫切面影像。胸膜瀰漫性增厚並顯影，邊緣不規則，直徑達3.7 mm。</p>
+                    </div>
+                    <div class="card p-4">
+                        <div class="h-80 overflow-hidden rounded-lg mb-4">
+                            <img src="3.png" alt="Image 3" class="w-full h-full object-cover object-center">
+                        </div>
+                        <h3 class="font-bold text-lg mb-2" style="color:#a35d6a;">圖3: 胸膜顯影結節</h3>
+                        <p class="text-gray-700">造影後第三次掃描的橫切面影像。沿著胸膜可見許多顯影結節，右側後端較多，最大尺寸為9.5mm×5.6 mm。</p>
+                    </div>
+                    <div class="card p-4">
+                        <div class="h-80 overflow-hidden rounded-lg mb-4">
+                            <img src="4.png" alt="Image 4" class="w-full h-full object-cover object-center">
+                        </div>
+                        <h3 class="font-bold text-lg mb-2" style="color:#a35d6a;">圖4: 膽囊壁增厚</h3>
+                        <p class="text-gray-700">造影後第二次掃描的橫切面影像。膽囊壁增厚，有低衰減邊緣。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="plan-section">
+                <h2 class="page-section-title text-center mt-16 text-2xl font-bold">行動計畫與追蹤建議</h2>
+                <p class="text-center text-gray-600 mt-1 mb-8">這裡是獸醫師根據影像發現建議的後續步驟，幫助您規劃未來的醫療照護。</p>
+                <div class="card p-6">
+                    <div class="overflow-x-auto">
+                        <table id="followUpTable">
+                            <thead>
+                                <tr>
+                                    <th style="color: #8c5d6b;">系統/部位</th>
+                                    <th>主要發現/問題</th>
+                                    <th>建議行動</th>
+                                    <th style="color: #8c5d6b;">優先級</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold">胸膜</td>
+                                    <td>雙側胸膜結節與瀰漫性胸膜增厚</td>
+                                    <td>建議對結節與增厚區域進行<b>細針穿刺採樣</b>以進行細胞學評估，幫助區別腫瘤或肉芽腫性發炎等病因。</td>
+                                    <td class="font-extrabold" style="color: #c95d6a;">高</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">膽囊</td>
+                                    <td>膽囊壁水腫與膽囊炎</td>
+                                    <td>建議進行<b>膽囊穿刺採樣膽汁</b>，以進行細胞學檢查與細菌培養。</td>
+                                    <td class="font-extrabold" style="color: #c95d6a;">高</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">淋巴結</td>
+                                    <td>多處淋巴結腫大 (胸骨、縱膈、右結腸)</td>
+                                    <td>淋巴結腫大可能為感染/發炎導致的<b>反應性</b>，或<b>腫瘤轉移</b>。建議整合其他採樣結果綜合判斷，或與醫師討論是否需進一步採樣。</td>
+                                    <td class="font-semibold" style="color: #d98a96;">中</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">結節</td>
+                                    <td>左肝結節、左後腹膜結節</td>
+                                    <td>可能為良性增生、肉芽腫或腫瘤。建議整合其他檢查結果判斷，或於未來<b>定期影像追蹤</b>，評估結節大小變化。</td>
+                                    <td class="font-semibold" style="color: #d98a96;">中</td>
+                                </tr>
+                                 <tr>
+                                    <td class="font-semibold">下呼吸道與肺臟</td>
+                                    <td>肺部塌陷與疑似支氣管內物質</td>
+                                    <td>可能繼發于胸水壓迫、麻醉或下呼吸道疾病。建議<b>臨床監控呼吸狀況</b>，並可能在胸水移除後改善。</td>
+                                    <td class="font-semibold" style="color: #d98a96;">中</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="audio-guide" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-center mb-2 header-title">AI對話淺聊弟弟電腦斷層報告</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">您可以聆聽AI形成的podcast對話討論，也可以使用下方的按鈕調整播放速度。</p>
+                <div class="w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="bg-white p-4 md:p-6 shadow-xl border-2 rounded-lg" style="border-color: #e0b8be;">
+                        <audio id="interactiveGuideAudio" controls class="w-full mb-4">
+                            <source src="didi.m4a" type="audio/mpeg">
+                            您的瀏覽器不支援 audio 標籤。
+                        </audio>
+                        <div class="controls flex justify-center gap-2 flex-wrap">
+                            <button data-speed="0.75" class="audio-speed-btn">0.75x</button>
+                            <button data-speed="1" class="audio-speed-btn active">正常</button>
+                            <button data-speed="1.25" class="audio-speed-btn">1.25x</button>
+                            <button data-speed="1.5" class="audio-speed-btn">1.5x</button>
+                            <button data-speed="2" class="audio-speed-btn">2x</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="text-center mt-12 py-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">本網頁由美國獸醫影像專科醫師 謝淯紘醫師使用AI程式為飼主周佳綺與「弟弟」專屬製作。</p>
+            <p class="text-sm text-gray-500">內容基於 <a href="https://www.alex-ray.com" target="_blank" class="font-semibold custom-link">愛力克獅獸醫影像學院</a> 提供的電腦斷層報告整理，僅供參考，所有醫療決策請務必與您的主治獸醫師討論。</p>
+        </footer>
+
+    </div>
+
+<script>
+// 從PDF報告中提取並摘要的數據
+const reportData = {
+    thorax: {
+        title: "胸腔 (肺、胸膜、淋巴結)",
+        icon: "🫁", // 肺部 emoji
+        findings: [
+            "<b>雙側胸膜腔有少量不顯影的液體:</b> 導致肺葉從胸腔壁退縮 (圖1)。",
+            "<b>胸膜瀰漫性增厚並顯影:</b> 邊緣不規則，直徑達3.7mm (圖2)。",
+            "<b>右側胸膜腔內有少量氣體。</b>",
+            "<b>沿著胸膜可見許多顯影結節:</b> 右側後端較多，最大尺寸為9.5mm×5.6 mm (圖3)。",
+            "<b>雙側胸骨淋巴結、一個前縱膈淋巴結、一個後縱膈淋巴結腫大:</b> 直徑達6.7mm。",
+            "<b>肺葉全區有無結構性間質相:</b> 腹側部分更為嚴重，右前葉、右中葉和左前葉完全實變。",
+            "<b>右前葉、右中葉、右後葉和左前葉後段支氣管的腹側部分有不顯影物質。</b>",
+            "<b>後腔靜脈在橫膈上方區域局部狹窄。</b>",
+            "心臟和肺血管無異常。",
+            "氣管在正常範圍內。",
+            "骨結構無異常。"
+        ],
+        implications: "雙側胸膜結節與胸膜增厚主要考慮腫瘤（如轉移性癌、間皮瘤或淋巴瘤）或肉芽腫（如貓傳染性腹膜炎、真菌感染或寄生蟲感染）。胸膜積液可能為腫瘤性、炎症性或感染性病因。右側氣胸、肺塌陷和淋巴結腫大也需考慮相應原因。",
+        recommendations: "建議對胸膜結節與胸膜增厚部位進行細針穿刺採樣以進一步評估疾病。"
+    },
+    abdomen: {
+        title: "腹腔 (肝膽、脾臟、胰臟、腎臟、淋巴結)",
+        icon: "🟠", // 橙色圓點表示腹部
+        findings: [
+            "<b>肝臟:</b> 左外側肝葉有一個界限不清的顯影結節，直徑3.3mm。",
+            "<b>膽道系統:</b> 膽囊壁增厚，有低衰減邊緣 (圖4)。",
+            "<b>脾臟:</b> 脾臟邊緣平滑，顯影均質。",
+            "<b>胃:</b> 胃輕微擴張，內含氣體和液體。胃壁顯影無異常。",
+            "<b>小腸:</b> 在正常範圍內。小腸壁顯影無異常，無明顯腫塊或腫塊效應。",
+            "<b>結腸:</b> 在正常範圍內。大腸壁顯影無異常。",
+            "<b>胰臟:</b> 左胰葉邊緣不規則。胰體部局部輕度增厚，厚度達1.2 cm。",
+            "<b>右腎:</b> 無異常；腎臟邊緣平滑。腎臟顯影無異常。腎盂無異常。腎臟長度4.5cm。",
+            "<b>左腎:</b> 腎臟邊緣不規則。腎臟顯影無異常。腎盂無異常。腎臟長度3.9cm。",
+            "<b>右腎上腺:</b> 無異常；腎上腺寬度4.0mm。腎上腺顯影無異常。",
+            "<b>左腎上腺:</b> 無異常；腎上腺寬度4.2mm。腎上腺顯影無異常。",
+            "<b>膀胱:</b> 無異常；內容物均質低衰減，膀胱壁薄且無異常。",
+            "<b>淋巴結:</b> 右結腸淋巴結腫大，大小8.2mm x 6.6 mm。",
+            "<b>腹膜和後腹膜腔:</b> 後腹膜腔和腹膜腔內有少量不顯影液體。左後腹膜腔有一個點狀顯影病灶。",
+            "骨結構在正常範圍內。"
+        ],
+        implications: "左肝結節主要考慮結節性增生、肉芽腫或腫瘤。膽囊壁增厚與膽囊炎相關。左後腹膜結節考慮腫瘤或肉芽腫。腹膜和腹膜後積液考慮腫瘤性或炎症性/感染性病因。胰臟發現可能為個體差異、增生或慢性胰腺炎。右結腸淋巴結腫大考慮反應性或腫瘤性病因。左腎慢性變化。",
+        recommendations: "膽囊穿刺可進一步檢查膽汁。"
+    },
+    // PDF中沒有明確的頭部和骨骼獨立章節，根據現有HTML模板保留
+    headNeck: {
+        title: "其他發現 (如頭部、脊椎、關節)",
+        icon: "💡", // 燈泡 emoji 表示其他發現
+        findings: [
+            "PDF中未明確提及頭部或脊椎、關節的單獨詳細發現，僅提及骨骼結構在胸腔和腹腔部分無異常。"
+        ],
+        implications: "由於報告主要聚焦於胸腹腔，其他部位的詳細信息較少。建議如存在相關臨床症狀，可進一步評估。",
+        recommendations: "無特定建議，請根據臨床症狀與主治獸醫師討論。"
+    }
+};
+
+const organDisplayOrder = ['thorax', 'abdomen', 'headNeck']; // 調整顯示順序
+
+document.addEventListener('DOMContentLoaded', () => {
+    const organButtonsContainer = document.getElementById('organ-buttons-container');
+    const organDetailsContainer = document.getElementById('organ-details-container');
+
+    function createOrganButtons() {
+        if (!organButtonsContainer) return;
+        organDisplayOrder.forEach(key => {
+            const data = reportData[key];
+            if (data && data.title) {
+                const button = document.createElement('button');
+                button.className = 'organ-btn';
+                button.dataset.organ = key;
+                button.innerHTML = `<span class="icon">${data.icon}</span><span>${data.title}</span>`;
+                button.addEventListener('click', () => {
+                    displaySelectedOrganDetail(key);
+                    document.querySelectorAll('.organ-btn').forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                });
+                organButtonsContainer.appendChild(button);
+            }
+        });
+    }
+
+    function displaySelectedOrganDetail(organKey) {
+        if (!organDetailsContainer) return;
+        const data = reportData[organKey];
+        if (!data) return;
+
+        let html = `<h3 class="text-2xl font-bold mb-6 flex items-center"><span class="text-3xl mr-3">${data.icon}</span>${data.title}</h3>`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">`;
+        html += `
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">影像發現</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">${data.findings.map(f => `<li>${f}</li>`).join('')}</ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">這代表什麼？</h4>
+                <p class="text-gray-700">${data.implications || '待補充相關分析。'}</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-2 pb-1" style="color:#a35d6a; border-bottom: 2px solid #f8e5e7;">獸醫建議</h4>
+                <p class="text-gray-700">${data.recommendations || '待補充相關建議。'}</p>
+            </div>
+        `;
+        html += `</div>`;
+        organDetailsContainer.innerHTML = html;
+    }
+    
+    // --- NEW: Audio Speed Control Logic ---
+    const audioPlayer = document.getElementById('interactiveGuideAudio');
+    if (audioPlayer) {
+        const speedButtonsContainer = audioPlayer.nextElementSibling;
+        speedButtonsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.audio-speed-btn');
+            if (button) {
+                const speed = parseFloat(button.dataset.speed);
+                audioPlayer.playbackRate = speed;
+
+                // Update active button state
+                speedButtonsContainer.querySelectorAll('.audio-speed-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                
+                // Play audio if it was paused
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                }
+            }
+        });
+    }
+
+
+    // Initial setup
+    createOrganButtons();
+    const firstButton = organButtonsContainer.querySelector('.organ-btn');
+    if (firstButton) {
+        firstButton.click();
+    }
+});
+</script>
+
+</body>
+</html>
